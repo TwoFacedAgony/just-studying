@@ -95,14 +95,14 @@ class Translator:
             self.tr = {}
 
         self.tr.setdefault(eng, [])
-        if eng in self.tr['tr'].keys():
-            self.tr['tr'][eng] = rus
+        if eng in self.tr.keys() and not rus in self.tr[eng]:
+            self.tr[eng].append(rus)
 
     def remove(self, eng):
-        del self.tr['tr'][eng]
+        del self.tr[eng]
 
     def translate(self, eng):
-        return self.tr['tr'][eng]
+        return self.tr[eng]
 
 
 tr = Translator()
@@ -115,6 +115,5 @@ tr.add("go", "идти")
 tr.add("go", "ехать")
 tr.add("go", "ходить")
 tr.add("milk", "молоко")
-print(tr.remove("car"))
-print(tr.__dict__)
-print(tr.translate("go"))
+tr.remove("car")
+print(*tr.translate("go"))
