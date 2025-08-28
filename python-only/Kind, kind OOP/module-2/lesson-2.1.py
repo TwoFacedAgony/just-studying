@@ -1,16 +1,17 @@
 '''ENCAPSULATION'''
+from typing import Any
 
 
-class Point:
+class Point1:
     def __init__(self, x: int = 0, y: int = 0) -> None:
         self.x = x
         self.y = y
 
 
-# pt = Point(1, 2)
-# pt.x = 100
-# pt.y = "coord_y"
-# print(pt.x, pt.y)
+# pt1 = Point1(1, 2)
+# pt1.x = 100
+# pt1.y = "coord_y"
+# print(pt1.x, pt1.y)
 
 
 '''learning protected'''
@@ -102,3 +103,172 @@ class Money:
         self.__money += mn.get_money()
 
 
+'''task3'''
+class Book:
+    def __init__(self, author: str, title: str, price: int) -> None:
+        self.__author = author
+        self.__title = title
+        self.__price = price
+
+    def set_title(self, title: str) -> None:
+        self.__title = title
+
+    def set_author(self, author: int) -> None:
+        self.__author = author
+
+    def set_price(self, price: int) -> None:
+        self.__price = price
+
+    def get_title(self) -> str:
+        return self.__title
+
+    def get_author(self) -> str:
+        return self.__author
+
+    def get_price(self) -> int:
+        return self.__price
+
+
+'''task4'''
+class Line:
+    def __init__(self, x1: int, y1: int, x2: int, y2: int) -> None:
+        self.__x1 = x1
+        self.__y1 = y1
+        self.__x2 = x2
+        self.__y2 = y2
+
+    def set_coords(self, x1: int, y1: int, x2: int, y2: int) -> None:
+        self.__x1 = x1
+        self.__y1 = y1
+        self.__x2 = x2
+        self.__y2 = y2
+
+    def get_coords(self) -> tuple[int, int, int, int]:
+        return (self.__x1, self.__y1, self.__x2, self.__y2)
+
+    def draw(self) -> None:
+        print(*self.get_coords())
+
+
+'''task5'''
+class Point:
+    def __init__(self, x: int = 0, y: int = 0) -> None:
+        self.__x = x
+        self.__y = y
+
+    def get_coords(self) -> tuple[int, int]:
+        return (self.__x, self.__y)
+
+
+class Rectangle:
+    def __init__(self, *args) -> None:
+        if len(args) == 2 and all([isinstance(elem, Point) for elem in args]):
+            self.__sp, self.__ep = args
+        else:
+            self.__sp, self.__ep = Point(args[0], args[1]), Point(args[0], args[1])
+
+    def set_coords(self, sp, ep) -> None:
+        self.__sp = sp
+        self.__ep = ep
+
+    def get_coords(self) -> tuple[Point, Point]:
+        return self.__sp, self.__ep
+
+    def draw(self) -> None:
+        print(f"Прямоугольник с координатами: ({', '.join(map(str, self.__sp.get_coords()))}) ({', '.join(map(str, self.__ep.get_coords()))})")
+
+
+'''task6'''
+class ObjList:
+    def __init__(self, data: str) -> None:
+        self.__next = None
+        self.__prev = None
+        self.__data = data
+
+    def set_next(self, next) -> None:
+        self.__next = next
+
+    def set_prev(self, prev) -> None:
+        self.__prev = prev
+
+    def get_next(self):
+        return self.__next
+
+    def get_prev(self):
+        return self.__prev
+
+    def set_data(self, data) -> None:
+        self.__data = data
+
+    def get_data(self) -> list:
+        return [elem.get_data() for elem in self.__data]
+
+class LinkedList:
+    def __init__(self):
+        self.__data = []
+        self.head = None
+        self.tail = None
+
+    def add_obj(self, obj: ObjList) -> None:
+        if self.__data:
+            obj.set_prev(self.__data[-1])
+            self.__data[-1].set_next(obj)
+        else:
+            self.head = obj
+        self.tail = obj
+        self.__data.append(obj)
+
+    def remove_obj(self) -> None:
+        self.__data[-1].set_prev(None)
+        self.__data.pop()
+        if self.__data:
+            self.__data[-1].set_next(None)
+            self.tail = self.__data[-1]
+        else:
+            self.head = None
+            self.tail = None
+
+    def get_data(self) -> list:
+        return self.__data
+
+
+'''task7'''
+import random
+import re
+
+
+class EmailValidator:
+    def __new__(cls, *args, **kwargs):
+        cls.__email = None
+        return None
+
+    @staticmethod
+    def __is_email_str(email) -> bool:
+        return isinstance(email, str)
+
+    @classmethod
+    def get_random_email(cls):
+        accessible_symbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_."
+        cls.__email = f'{random.choice(accessible_symbols) * random.randint(1, 100)}@{random.choice(accessible_symbols) * random.randint(1, 50)}'
+
+        double_point = []
+        for index, symbol in enumerate(cls.__email):
+            if symbol == '.' and index != len(accessible_symbols) - 1 and cls.__email[index + 1] == '.':
+                double_point.append(index)
+        for index in double_point:
+            cls.__email = f"{cls.__email[:index]}{random.choice(accessible_symbols[:-1])}{cls.__email[index + 1:]}"
+
+        cat_index = cls.__email.index('@')
+        if not '.' in cls.__email[cat_index + 1:]:
+            domain_name_length = len(cls.__email[cat_index + 1:])
+            domain_point_index = random.randint(cat_index + 1, cat_index + 1 + domain_name_length)
+            cls.__email = f"{cls.__email[:domain_point_index]}.{cls.__email[domain_point_index + 1:]}"
+
+        return cls.__email
+
+    @classmethod
+    def check_email(cls, email: str) -> bool:
+        if cls.__is_email_str(email):
+            if re.match(r'[a-zA-Z\d_\.]{1,100}@[a-zA-Z\d_\.]{1,50}', email) and '.' in email[email.find('@'):] and '..' not in email:
+                return True
+        return False
