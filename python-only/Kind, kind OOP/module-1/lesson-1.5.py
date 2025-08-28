@@ -181,7 +181,7 @@ cart.add(Cup('the best boss', 1000))
 print(cart.get_list())
 
 
-'''task 8'''
+'''task 8 - idk works in pycharm'''
 import sys
 
 
@@ -220,8 +220,8 @@ class ListObject:
 # [print(f'{elem.data}, {elem.next_obj}') for elem in task_list]
 # print(task_list)
 
-'''task 9'''
-import numpy as np
+'''task 9 - unfinished'''
+from random import shuffle
 
 
 class Cell:
@@ -235,4 +235,20 @@ class GamePole:
     def __init__(self, N: int, M: int) -> None:
         self.N = N
         self.M = M
+        self.pole = [[Cell() for _ in range(N)] for _ in range(N)]
+
+    def init(self) -> None:
+        mines_coords = [num for num in range(self.N ** 2)]
+        shuffle(mines_coords)
+        mines_coords = mines_coords[:self.M]
+        for line_index, line in enumerate(self.pole):
+            for col_index, col in enumerate(line):
+                if col_index + line_index * self.N in mines_coords:
+                    self.pole[line_index][col_index] = '*'
+        print(self.pole)
+
+    def show(self) -> None:
+        for line in self.pole:
+            print(*line)
+
 
