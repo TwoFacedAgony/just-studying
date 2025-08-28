@@ -72,5 +72,50 @@ class Point4D:
         self.x4 = x4
 
 
-p4 = Point4D(1, 2, 3, 4)
-p4.__dict__
+# p4 = Point4D(1, 2, 3, 4)
+# p4.__dict__
+
+
+'''task1'''
+class FloatValue:
+    @classmethod
+    def verify_value(cls, value):
+        if type(value) != float:
+            raise TypeError("Присваивать можно только вещественный тип данных.")
+
+    def __set_name__(self, owner, name):
+        self.name = "_" + name
+
+    def __get__(self, instance, owner):
+        return getattr(instance, self.name)
+
+    def __set__(self, instance, value):
+        self.verify_value(value)
+        setattr(instance, self.name, value)
+
+
+class Cell:
+    value = FloatValue()
+
+    def __init__(self, value = 0.0) -> None:
+        self.value = value
+
+class TableSheet:
+    def __init__(self, N: int, M: int) -> None:
+        self.cells = [[Cell() for _ in range(M)] for _ in range(N)]
+
+
+# table = TableSheet(5, 3)
+# cell_number = 1.0
+# for line_index, line in enumerate(table.cells, start=0):
+#     for cell_index, cell in enumerate(line, start=0):
+#         line[cell_index].value = cell_number
+#         cell_number += 1.0
+#
+# for line_index, line in enumerate(table.cells, start=0):
+#     for cell_index, cell in enumerate(line, start=0):
+#         print(line[cell_index].x)
+
+
+'''task2'''
+class ValidateString:
