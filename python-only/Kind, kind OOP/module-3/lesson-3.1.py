@@ -420,20 +420,22 @@ import time
 
 
 class Mechanical:
-    def __init__(self, date):
+    def __init__(self, date: float):
         self.date = date
 
     def __setattr__(self, item, value):
-        if item and isinstance(value, float) and value > 0:
+        if item == "date" and isinstance(value, float) and value > 0 and item not in self.__dict__:
             object.__setattr__(self, item, value)
 
+    def __getattribute__(self, item):
+        return object.__getattribute__(self, item)
 
 class Aragon:
     def __init__(self, date):
         self.date = date
 
     def __setattr__(self, item, value):
-        if item and isinstance(value, float) and value > 0:
+        if item == "date" and isinstance(value, float) and value > 0 and item not in self.__dict__:
             object.__setattr__(self, item, value)
 
 
@@ -442,9 +444,8 @@ class Calcium:
         self.date = date
 
     def __setattr__(self, item, value):
-        if item and isinstance(value, float) and value > 0:
+        if item == "date" and isinstance(value, float) and value > 0 and item not in self.__dict__:
             object.__setattr__(self, item, value)
-
 
 class GeyserClassic:
     MAX_DATE_FILTER = 100
