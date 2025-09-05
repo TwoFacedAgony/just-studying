@@ -26,3 +26,24 @@ class Event(models.Model):
     name = models.CharField(max_length=70)
     date = models.DateField(default=now) #uses current data if not set by user
     count = models.PositiveSmallIntegerField()
+
+
+class LogEntry(models.Model):
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Review(models.Model):
+    CHOICES = (
+        (1, 'Плохо'),
+        (2, 'Неудовлетворительно'),
+        (3, 'Удовлетворительно'),
+        (4, 'Хорошо'),
+        (5, 'Отлично'),)
+
+    text = models.TextField(max_length=2000)
+    rating = models.PositiveSmallIntegerField(choices=CHOICES)
+
+    def __str__(self):
+        return f'Оценка: {self.rating}. Отзыв: {self.text}'
