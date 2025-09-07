@@ -7,19 +7,19 @@ class Greeting(models.Model): # the name of table in DB will be main_app_Greetin
     language = models.CharField(max_length=50)
 
 class Person(models.Model):
-    name = models.CharField(min_length=3, max_length=50)
+    name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
     email = models.EmailField()
     photo = models.ImageField()
     is_employed = models.BooleanField(default=False)
     height = models.DecimalField(max_digits=3, decimal_places=0)
-    weight = models.DecimalField(min_value=10, max_value=500, decimal_places=2)
+    weight = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.URLField()
 
 
 class Student(models.Model):
-    first_name = models.CharField(min_length=3, max_length=50)
-    second_name = models.CharField(min_length=3, max_length=50)
+    first_name = models.CharField(max_length=50)
+    second_name = models.CharField(max_length=50)
 
 
 class Event(models.Model):
@@ -47,3 +47,17 @@ class Review(models.Model):
 
     def __str__(self):
         return f'Оценка: {self.rating}. Отзыв: {self.text}'
+
+
+# many-to-one
+class Faculty(models.Model):
+    title = models.CharField(max_length=100)
+
+
+class StudentFaculty(models.Model):
+    first_name = models.CharField(max_length=100)
+    second_name = models.CharField(max_length=100)
+    age = models.PositiveSmallIntegerField()
+    faculty = models.ForeignKey(Faculty, on_delete = models.SET_NULL, null=True)
+
+

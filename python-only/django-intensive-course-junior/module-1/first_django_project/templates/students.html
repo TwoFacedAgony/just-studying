@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>
+
+{% for student in students %}
+    <pre>
+    {{forloop.counter0}}) Student {{student.id}}:
+        name {{student.first_name}} {{student.second_name}},
+        age {{student.age}},
+        faculty {{student.faculty.id}} {{student.faculty.title}}
+    </pre>
+
+    {% endfor %}
+    <br>
+
+
+</h1>
+
+</body>
+</html>

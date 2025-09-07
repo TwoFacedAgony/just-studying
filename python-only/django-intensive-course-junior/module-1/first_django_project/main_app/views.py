@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound  # here are HttpRequest, HttpResponse, HttpResponseForbidden and so on; QueryDict class, ...
 from django.shortcuts import render
 from django.views import View
-from main_app.models import Greeting
+from main_app.models import Greeting, StudentFaculty
 from main_app.models import Student
 
 
@@ -241,3 +241,10 @@ class SaveSessionData(View):
         if (value := request.session.get('my_value')) is not None:
             return HttpResponse(value)
         return HttpResponse("Значение не установлено")
+
+
+def get_faculty_info_from_student(request):
+    students = []
+    for student in StudentFaculty.objects.all():
+        students.append(student)
+    return render(request, 'students.html', context={'students': students})

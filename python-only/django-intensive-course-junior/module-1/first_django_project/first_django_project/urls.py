@@ -24,4 +24,5 @@ urlpatterns = [
     path('page2/', views.page2),
     path('page3/', views.page3_view),
     path('page4/', views.page4_view),
+    path('students/', views.get_faculty_info_from_student)
 ]
