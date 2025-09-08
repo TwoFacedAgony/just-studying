@@ -3,14 +3,10 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, HttpResponseNotFound  # here are HttpRequest, HttpResponse, HttpResponseForbidden and so on; QueryDict class, ...
 from django.shortcuts import render, redirect
 from django.views import View
-<<<<<<< HEAD
-
-from main_app.models import Greeting, Student, StudentFaculty, Faculty
-=======
+from main_app.models import Greeting, Student, Student, Faculty, Faculty
 from django.contrib.auth import authenticate, login, logout
 
 from main_app.models import Greeting, Student, Faculty, StudentFaculty, Band, Musician, Book, Author, Publisher
->>>>>>> 9562468f48c0488521b0f505eb8b2a6c763949c9
 
 
 def index(request):
@@ -257,14 +253,14 @@ def get_faculty_info_from_student(request):
     return render(request, 'students.html', context={'students': students})
 
 
-<<<<<<< HEAD
 def get_all_faculty_students(request):
     itmo_faculty = Faculty.objects.get(id=1)
     itmo_students = itmo_faculty.studentfaculty_get.all()
 
     for student in itmo_students:
         print(f'ID: {student.id}, Name: {student.first_name} {student.last_name}')
-=======
+
+
 def band_and_musicians_view(request):
     # Получить всех музыкантов группы
     band = Band.objects.get(id=36)
@@ -387,5 +383,3 @@ def logout_view(request):
         return HttpResponse("user is not authenticated")
 
     return HttpResponse("not a POST request")
-
->>>>>>> 9562468f48c0488521b0f505eb8b2a6c763949c9
