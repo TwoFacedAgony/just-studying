@@ -1,9 +1,11 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse, HttpResponseNotFound  # here are HttpRequest, HttpResponse, HttpResponseForbidden and so on; QueryDict class, ...
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, HttpResponseNotFound  # here are HttpRequest, HttpResponse, HttpResponseForbidden and so on; QueryDict class, ...
+from django.shortcuts import render, redirect
 from django.views import View
-from main_app.models import Greeting, StudentFaculty
-from main_app.models import Student
+from django.contrib.auth import authenticate, login, logout
+
+from main_app.models import Greeting, Student, Faculty, StudentFaculty, Band, Musician, Book, Author, Publisher
 
 
 def index(request):
@@ -248,3 +250,128 @@ def get_faculty_info_from_student(request):
     for student in StudentFaculty.objects.all():
         students.append(student)
     return render(request, 'students.html', context={'students': students})
+
+
+def band_and_musicians_view(request):
+    # Получить всех музыкантов группы
+    band = Band.objects.get(id=36)
+    band_musicians = band.musicians.all()
+
+    # Получить все группы, в которых играет музыкант
+    musician = Musician.objects.get(id=61)
+    musician_bands = musician.bands.all()
+
+    # Подготовка данных для ответа
+    data = {
+        "band": band.name,
+        "band_musicians": [musician.name for musician in band_musicians],
+        "musician": musician.name,
+        "musician_bands": [band.name for band in musician_bands],
+    }
+
+    return JsonResponse(data)
+
+
+def just_learning_queryset_view(request):
+    books_1 = Book.objects.all()
+    books_2 = Book.objects.filter(pages__gt = 300)
+    books_3 = Book.objects.filter(pages__gt=300, rating__gt=4.5)
+    books_4 = Book.objects.filter(author__country="Япония")
+    books_5 = Book.objects.filter(title__icontains="django")
+    author_1 = Author.objects.filter(name="Антон Чехов")
+    authors_1 = Author.objects.filter(books__pages__gt=200)
+    authors_2 = Author.objects.exclude(books__rating__lt=4)
+    authors_3 = Author.objects.filter(books__rating__lt=2, books__pages__gt=500)
+    publishers = Publisher.objects.filter(books__author__country="Австралия")
+
+
+def user_info_view(request):
+
+    user = request.user
+
+    if user.is_authenticated:
+        print(f'Привет, {user.username}!')
+    else:
+        return HttpResponse('Пожалуйста, войдите в систему.')
+
+    print(f'Username: {user.username}')
+    print(f'id: {user.id}')
+    print(f'Емайл: {user.email}')
+    print(f'Имя: {user.first_name}')
+    print(f'Фамилия: {user.last_name}')
+    print(f'Является ли админом: {user.is_superuser}')
+
+    return HttpResponse('Информация о пользователе выведена в консоль')
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)    # logout() also exists in django.contrib.auth
+            return HttpResponseRedirect('/home/')
+        else:
+            return HttpResponse('Неверное имя пользователя или пароль')
+
+    return render(request, 'login.html')
+
+
+@login_required
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+
+def check_authentification(request):
+    user = request.user
+
+    if user.is_authenticated:
+        return HttpResponse(f'{user.username}, {user.email}')
+
+    return redirect('/login/')
+
+
+def create_user_from_post(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        email = request.POST['email']
+
+        User.objects.create_user(username=username, email=email, password=password)
+
+    return HttpResponse("Not a POST request")
+
+
+def authenticate_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return HttpResponse('login success')
+
+        return HttpResponse('login fail')
+
+    return HttpResponse("Not a POST request")
+
+
+def logout_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            logout(request)
+
+        return HttpResponse("user is not authenticated")
+
+    return HttpResponse("not a POST request")
+

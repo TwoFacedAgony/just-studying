@@ -61,3 +61,49 @@ class StudentFaculty(models.Model):
     faculty = models.ForeignKey(Faculty, on_delete = models.SET_NULL, null=True)
 
 
+class Band(models.Model):
+    name = models.CharField(max_length=100)
+
+
+class Musician(models.Model):
+    name = models.CharField(max_length=100)
+    bands = models.ManyToManyField(Band, related_name='musicians')
+
+
+class Course(models.Model):
+    title = models.CharField(max_length=100)
+
+
+class Lesson(models.Model):
+    title = models.CharField(max_length=100)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+
+class Instructor(models.Model):
+    title = models.CharField(max_length=100)
+    lessons = models.ManyToManyField(Lesson)
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=100)  # Имя автора
+    country = models.CharField(max_length=100, null=True, blank=True)  # Страна проживания
+
+
+class Publisher(models.Model):
+    name = models.CharField(max_length=100)  # Название издательства
+    country = models.CharField(max_length=100, null=True, blank=True)  # Страна издательства
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=200)  # Название книги
+    pages = models.PositiveIntegerField()  # Количество страниц
+    rating = models.FloatField()  # Рейтинг книги
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')  # Автор книги
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name='books')  # Издательство книги
+
+
+class StudentPortfolio(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    age = models.IntegerField(default=0)
+    photo = models.ImageField(upload_to='images/')
