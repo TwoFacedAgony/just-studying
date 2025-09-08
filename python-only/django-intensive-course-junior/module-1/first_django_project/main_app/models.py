@@ -49,15 +49,31 @@ class Review(models.Model):
         return f'Оценка: {self.rating}. Отзыв: {self.text}'
 
 
-# many-to-one
 class Faculty(models.Model):
     title = models.CharField(max_length=100)
+
+
+class AdditionalCourse(models.Model):
+    title = models.CharField(max_length=100)
+
+
+class Profile(models.Model):
+    name = models.CharField(max_length=200)
+    password = models.CharField(max_length=100)
 
 
 class StudentFaculty(models.Model):
     first_name = models.CharField(max_length=100)
     second_name = models.CharField(max_length=100)
     age = models.PositiveSmallIntegerField()
-    faculty = models.ForeignKey(Faculty, on_delete = models.SET_NULL, null=True)
+
+    # many-to-one
+    faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True)
+
+    # many-to-many
+    additionalCourses = models.ManyToManyField(AdditionalCourse)
+
+    # one-to-one
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
 
 

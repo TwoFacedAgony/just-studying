@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound  # here are HttpRequest, HttpResponse, HttpResponseForbidden and so on; QueryDict class, ...
 from django.shortcuts import render
 from django.views import View
-from main_app.models import Greeting, StudentFaculty
-from main_app.models import Student
+
+from main_app.models import Greeting, Student, StudentFaculty, Faculty
 
 
 def index(request):
@@ -248,3 +248,11 @@ def get_faculty_info_from_student(request):
     for student in StudentFaculty.objects.all():
         students.append(student)
     return render(request, 'students.html', context={'students': students})
+
+
+def get_all_faculty_students(request):
+    itmo_faculty = Faculty.objects.get(id=1)
+    itmo_students = itmo_faculty.studentfaculty_get.all()
+
+    for student in itmo_students:
+        print(f'ID: {student.id}, Name: {student.first_name} {student.last_name}')
